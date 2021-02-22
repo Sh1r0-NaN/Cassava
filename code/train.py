@@ -43,15 +43,15 @@ USE_2019 = True
 
 
 class CFG:
-    seed = 2047
-    model_name = 'resnet200d_320'
+    seed = 1105
+    model_name = 'resnet50'
     pretrained = True
     img_size = 512
     num_classes = 5
     lr = 5e-4
     min_lr = 1e-6
-    t_max = 60
-    num_epochs = 60
+    t_max = 30
+    num_epochs = 30
     batch_size = 32
     accum = 1
     precision = 16
@@ -190,16 +190,6 @@ def get_transforms(*, phase):
             ),
             ToTensorV2(),
         ])
-    elif phase == 'valid':
-        return Compose([
-            A.Resize(height=CFG.img_size, width=CFG.img_size),
-            A.Normalize(
-                mean=[0.485, 0.456, 0.406],
-                std=[0.229, 0.224, 0.225],
-            ),
-            ToTensorV2(),
-        ])
-
     elif phase == 'valid':
         return Compose([
             A.Resize(height=CFG.img_size, width=CFG.img_size),
@@ -369,8 +359,8 @@ def main():
     print('=' * 10, f"Start Fold:{args.fold}", '=' * 10)
     train_loader, valid_loader = create_dataloader(df_all, df_2019, "../input/cassava-leaf-disease-merged/train", fold=args.fold)
 
-    # model = CustomResNet(model_name=CFG.model_name, pretrained=CFG.pretrained)
-    model = CustomDenseNet(model_name=CFG.model_name, pretrained=CFG.pretrained)
+    model = CustomResNet(model_name=CFG.model_name, pretrained=CFG.pretrained)
+    # model = CustomDenseNet(model_name=CFG.model_name, pretrained=CFG.pretrained)
     # print(model)
 
     lit_model = LitCassava(model)
